@@ -27,12 +27,12 @@ func main() {
 	if err != nil {
 		log.Fatalf("failed to listen: %v", err)
 	}
-	s := grpc.NewServer()
+	serverRegister := grpc.NewServer()
 
-	pb.RegisterUserServer(s, &userServer{})
+	pb.RegisterUserServer(serverRegister, &userServer{})
 
 	log.Printf("server listening at %v", lis.Addr())
-	if err := s.Serve(lis); err != nil {
+	if err := serverRegister.Serve(lis); err != nil {
 		log.Fatalf("failed to serve: %v", err)
 	}
 }
