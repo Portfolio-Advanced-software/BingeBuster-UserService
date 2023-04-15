@@ -1,0 +1,28 @@
+syntax = "proto3";
+
+option go_package = "github.com/Portfolio-Advanced-software/BingeBuster-UserService/protos";
+
+package user;
+
+service User {
+    rpc GetUsers (Empty) returns (stream UserInfo);
+    rpc GetUser (Id) returns (UserInfo);
+    rpc CreateUser (UserInfo) returns (Id);
+    rpc UpdateUser (UserInfo) returns (Status);
+    rpc DeleteUser (Id) returns (Status);
+}
+
+message Empty {}
+
+message UserInfo {
+    string id = 1;
+    string watchedmovies = 2;
+}
+
+message Id {
+    string value = 1;
+}
+
+message Status {
+    int32 value = 1;
+}
