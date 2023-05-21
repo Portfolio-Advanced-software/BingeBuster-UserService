@@ -34,8 +34,8 @@ func (s *UserServiceServer) CreateUser(ctx context.Context, req *userpb.CreateUs
 	data := models.User{
 		// ID:    Empty, so it gets omitted and MongoDB generates a unique Object ID upon insertion.
 		Email: user.GetEmail(),            
-		Phone: user.GetPhone();                
-		DateOfBirth: user.GetDateOfBirth();             
+		Phone: user.GetPhone(),               
+		DateOfBirth: user.GetDateOfBirth(),       
 		FirstName: user.;             
 		LastName: user.;              
 		CreditCardNumber: user.;           
