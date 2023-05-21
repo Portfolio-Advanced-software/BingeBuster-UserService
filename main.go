@@ -33,14 +33,14 @@ func (s *UserServiceServer) CreateUser(ctx context.Context, req *userpb.CreateUs
 	// Now we have to convert this into a Movie type to convert into BSON
 	data := models.User{
 		// ID:    Empty, so it gets omitted and MongoDB generates a unique Object ID upon insertion.
-		Email: user.GetEmail(),            
-		Phone: user.GetPhone(),               
-		DateOfBirth: user.GetDateOfBirth(),       
-		FirstName: user.;             
-		LastName: user.;              
-		CreditCardNumber: user.;           
-		ExpirationDate: user.;       
-		CVC: user.; 
+		Email:            user.GetEmail(),
+		Phone:            user.GetPhone(),
+		DateOfBirth:      user.GetDateofbirth(),
+		FirstName:        user.GetFirstname(),
+		LastName:         user.GetLastname(),
+		CreditCardNumber: user.GetCreditcardnumber(),
+		ExpirationDate:   user.GetExpirationdate(),
+		CVC:              user.GetCvc(),
 	}
 
 	// Insert the data into the database, result contains the newly generated Object ID for the new document
@@ -75,27 +75,27 @@ func (s *UserServiceServer) ReadUser(ctx context.Context, req *userpb.ReadUserRe
 		return nil, status.Errorf(codes.NotFound, fmt.Sprintf("Could not find user with Object Id %s: %v", req.GetId(), err))
 	}
 	// Cast to ReadMovieRes type
-	response := &userpb.ReadMovieRes{
-		Movie: &userpb.Movie{
-			Id:          oid.Hex(),
-			Title:       data.Title,
-			Description: data.Description,
-			ReleaseDate: data.ReleaseDate,
-			Director:    data.Director,
-			Genre:       data.Genre,
-			Rating:      data.Rating,
-			Runtime:     data.Runtime,
-			Poster:      data.Poster,
+	response := &userpb.ReadUserRes{
+		User: &userpb.User{
+			Id:               oid.Hex(),
+			Email:            data.Email,
+			Phone:            data.Phone,
+			Dateofbirth:      data.DateOfBirth,
+			Firstname:        data.FirstName,
+			Lastname:         data.LastName,
+			Creditcardnumber: data.CreditCardNumber,
+			Expirationdate:   data.ExpirationDate,
+			Cvc:              data.CVC,
 		},
 	}
 	return response, nil
 }
 
-func (s *UserServiceServer) ListUsers(req *userpb.ListMoviesReq, stream userpb.UserService_ListUsersServer) error {
+func (s *UserServiceServer) ListUsers(req *userpb.ListUsersReq, stream userpb.UserService_ListUsersServer) error {
 	// Initiate a movie type to write decoded data to
 	data := &models.User{}
 	// collection.Find returns a cursor for our (empty) query
-	cursor, err := moviedb.Find(context.Background(), bson.M{})
+	cursor, err := userdb.Find(context.Background(), bson.M{})
 	if err != nil {
 		return status.Errorf(codes.Internal, fmt.Sprintf("Unknown internal error: %v", err))
 	}
@@ -111,16 +111,16 @@ func (s *UserServiceServer) ListUsers(req *userpb.ListMoviesReq, stream userpb.U
 		}
 		// If no error is found send blog over stream
 		stream.Send(&userpb.ListUsersRes{
-			Movie: &userpb.User{
-				Id:          data.ID.Hex(),
-				Title:       data.Title,
-				Description: data.Description,
-				ReleaseDate: data.ReleaseDate,
-				Director:    data.Director,
-				Genre:       data.Genre,
-				Rating:      data.Rating,
-				Runtime:     data.Runtime,
-				Poster:      data.Poster,
+			User: &userpb.User{
+				Id:               data.ID.Hex(),
+				Email:            data.Email,
+				Phone:            data.Phone,
+				Dateofbirth:      data.DateOfBirth,
+				Firstname:        data.FirstName,
+				Lastname:         data.LastName,
+				Creditcardnumber: data.CreditCardNumber,
+				Expirationdate:   data.ExpirationDate,
+				Cvc:              data.CVC,
 			},
 		})
 	}
@@ -133,7 +133,7 @@ func (s *UserServiceServer) ListUsers(req *userpb.ListMoviesReq, stream userpb.U
 
 func (s *UserServiceServer) UpdateUser(ctx context.Context, req *userpb.UpdateUserReq) (*userpb.UpdateUserRes, error) {
 	// Get the user data from the request
-	movie := req.GetMovie()
+	user := req.GetUser()
 
 	// Convert the Id string to a MongoDB ObjectId
 	oid, err := primitive.ObjectIDFromHex(user.GetId())
@@ -146,14 +146,14 @@ func (s *UserServiceServer) UpdateUser(ctx context.Context, req *userpb.UpdateUs
 
 	// Convert the data to be updated into an unordered Bson document
 	update := bson.M{
-		"title":       movie.GetTitle(),
-		"description": movie.GetDescription(),
-		"releaseDate": movie.GetReleaseDate(),
-		"director":    movie.GetDirector(),
-		"genre":       movie.GetGenre(),
-		"rating":      movie.GetRating(),
-		"runtime":     movie.GetRuntime(),
-		"poster":      movie.GetPoster(),
+		"email":            user.GetEmail(),
+		"phone":            user.GetPhone(),
+		"dateofbirth":      user.GetDateofbirth(),
+		"firstname":        user.GetFirstname(),
+		"lastname":         user.GetLastname(),
+		"creditcardnumber": user.GetCreditcardnumber(),
+		"expirationdate":   user.GetExpirationdate(),
+		"cvc":              user.GetCvc(),
 	}
 
 	// Convert the oid into an unordered bson document to search by id
@@ -161,7 +161,7 @@ func (s *UserServiceServer) UpdateUser(ctx context.Context, req *userpb.UpdateUs
 
 	// Result is the BSON encoded result
 	// To return the updated document instead of original we have to add options.
-	result := moviedb.FindOneAndUpdate(ctx, filter, bson.M{"$set": update}, options.FindOneAndUpdate().SetReturnDocument(1))
+	result := userdb.FindOneAndUpdate(ctx, filter, bson.M{"$set": update}, options.FindOneAndUpdate().SetReturnDocument(1))
 
 	// Decode result and write it to 'decoded'
 	decoded := models.User{}
@@ -173,16 +173,16 @@ func (s *UserServiceServer) UpdateUser(ctx context.Context, req *userpb.UpdateUs
 		)
 	}
 	return &userpb.UpdateUserRes{
-		Movie: &userpb.Movie{
-			Id:          decoded.ID.Hex(),
-			Title:       decoded.Title,
-			Description: decoded.Description,
-			ReleaseDate: decoded.ReleaseDate,
-			Director:    decoded.Director,
-			Genre:       decoded.Genre,
-			Rating:      decoded.Rating,
-			Runtime:     decoded.Runtime,
-			Poster:      decoded.Poster,
+		User: &userpb.User{
+			Id:               decoded.ID.Hex(),
+			Email:            decoded.Email,
+			Phone:            decoded.Phone,
+			Dateofbirth:      decoded.DateOfBirth,
+			Firstname:        decoded.FirstName,
+			Lastname:         decoded.LastName,
+			Creditcardnumber: decoded.CreditCardNumber,
+			Expirationdate:   decoded.ExpirationDate,
+			Cvc:              decoded.CVC,
 		},
 	}, nil
 }
@@ -202,7 +202,7 @@ func (s *UserServiceServer) DeleteUser(ctx context.Context, req *userpb.DeleteUs
 		return nil, status.Errorf(codes.NotFound, fmt.Sprintf("Could not find/delete user with id %s: %v", req.GetId(), err))
 	}
 	// Return response with success: true if no error is thrown (and thus document is removed)
-	return &userpb.DeleteMovieRes{
+	return &userpb.DeleteUserRes{
 		Success: true,
 	}, nil
 }
@@ -212,7 +212,7 @@ const (
 )
 
 var db *mongo.Client
-var moviedb *mongo.Collection
+var userdb *mongo.Collection
 var mongoCtx context.Context
 
 var mongoUsername = "user-service"
@@ -242,14 +242,14 @@ func main() {
 	srv := &UserServiceServer{}
 
 	// Register the service with the server
-	userpb.RegisterMovieServiceServer(s, srv)
+	userpb.RegisterUserServiceServer(s, srv)
 
 	// Initialize MongoDb client
 	fmt.Println("Connecting to MongoDB...")
 	db = mongodb.ConnectToMongoDB(connUri)
 
 	// Bind our collection to our global variable for use in other methods
-	moviedb = db.Database(dbName).Collection(collectionName)
+	userdb = db.Database(dbName).Collection(collectionName)
 
 	go func() {
 		if err := s.Serve(lis); err != nil {
