@@ -10,13 +10,20 @@ service UserService {
     rpc ReadUser(ReadUserReq) returns (ReadUserRes);
     rpc UpdateUser(UpdateUserReq) returns (UpdateUserRes);
     rpc DeleteUser(DeleteUserReq) returns (DeleteUserRes);
-    rpc ListUsers(ListUserReq) returns (stream ListUserRes);
+    rpc ListUsers(ListUsersReq) returns (stream ListUsersRes);
 }
 
 
 message User {
-    string id = 1;
-    string watchedmovies = 2;
+	string id = 1;
+	string email = 2;             
+	string phone = 3;                
+	string dateofbirth = 4;             
+	string firstname = 5;             
+	string lastname = 6;              
+	int32 creditcardnumber = 7;           
+	string expirationdate = 8;       
+	int32 cvc = 9;                 
 }
 
 
@@ -48,8 +55,8 @@ message DeleteUserRes {
     bool success = 1;
 }
 
-message ListUserReq {}
+message ListUsersReq {}
 
-message ListUserRes {
+message ListUsersRes {
     User user = 1;
 }
