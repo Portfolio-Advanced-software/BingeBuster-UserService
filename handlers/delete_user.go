@@ -29,8 +29,13 @@ func (s *UserServiceServer) DeleteUser(ctx context.Context, req *userpb.DeleteUs
 	}
 
 	// Send a message to the watch history queue for deleting user's history
-	message := req.GetId() // Use the user ID as the message
-	messaging.ProduceMessage(message, "watch_history_queue")
+	message := map[string]interface{}{
+		"userId": req.GetId(),
+		"action": "deleteAllRecords",
+	}
+
+	queueName := "watch_history_queue"
+	messaging.ProduceMessage(message, queueName)
 
 	// Return response with success: true if no error is thrown (and thus document is removed)
 	return &userpb.DeleteUserRes{
