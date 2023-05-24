@@ -2,7 +2,7 @@ syntax = "proto3";
 
 package user;
 
-option go_package = "./proto";
+option go_package = "github.com/Portfolio-Advanced-software/BingeBuster-UserService/userpb";
 
 
 service UserService {

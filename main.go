@@ -25,21 +25,21 @@ type UserServiceServer struct {
 }
 
 func (s *UserServiceServer) CreateUser(ctx context.Context, req *userpb.CreateUserReq) (*userpb.CreateUserRes, error) {
-	// Essentially doing req.Movie to access the struct with a nil check
+	// Essentially doing req.User to access the struct with a nil check
 	user := req.GetUser()
 	if user == nil {
 		return nil, status.Error(codes.InvalidArgument, "Invalid user")
 	}
-	// Now we have to convert this into a Movie type to convert into BSON
+	// Now we have to convert this into a User type to convert into BSON
 	data := models.User{
 		// ID:    Empty, so it gets omitted and MongoDB generates a unique Object ID upon insertion.
 		Email:            user.GetEmail(),
 		Phone:            user.GetPhone(),
-		DateOfBirth:      user.GetDateofbirth(),
-		FirstName:        user.GetFirstname(),
-		LastName:         user.GetLastname(),
-		CreditCardNumber: user.GetCreditcardnumber(),
-		ExpirationDate:   user.GetExpirationdate(),
+		DateOfBirth:      user.GetDateOfBirth(),
+		FirstName:        user.GetFirstName(),
+		LastName:         user.GetLastName(),
+		CreditCardNumber: user.GetCreditCardNumber(),
+		ExpirationDate:   user.GetExpirationDate(),
 		CVC:              user.GetCvc(),
 	}
 
@@ -80,11 +80,11 @@ func (s *UserServiceServer) ReadUser(ctx context.Context, req *userpb.ReadUserRe
 			Id:               oid.Hex(),
 			Email:            data.Email,
 			Phone:            data.Phone,
-			Dateofbirth:      data.DateOfBirth,
-			Firstname:        data.FirstName,
-			Lastname:         data.LastName,
-			Creditcardnumber: data.CreditCardNumber,
-			Expirationdate:   data.ExpirationDate,
+			DateOfBirth:      data.DateOfBirth,
+			FirstName:        data.FirstName,
+			LastName:         data.LastName,
+			CreditCardNumber: data.CreditCardNumber,
+			ExpirationDate:   data.ExpirationDate,
 			Cvc:              data.CVC,
 		},
 	}
@@ -115,11 +115,11 @@ func (s *UserServiceServer) ListUsers(req *userpb.ListUsersReq, stream userpb.Us
 				Id:               data.ID.Hex(),
 				Email:            data.Email,
 				Phone:            data.Phone,
-				Dateofbirth:      data.DateOfBirth,
-				Firstname:        data.FirstName,
-				Lastname:         data.LastName,
-				Creditcardnumber: data.CreditCardNumber,
-				Expirationdate:   data.ExpirationDate,
+				DateOfBirth:      data.DateOfBirth,
+				FirstName:        data.FirstName,
+				LastName:         data.LastName,
+				CreditCardNumber: data.CreditCardNumber,
+				ExpirationDate:   data.ExpirationDate,
 				Cvc:              data.CVC,
 			},
 		})
@@ -148,11 +148,11 @@ func (s *UserServiceServer) UpdateUser(ctx context.Context, req *userpb.UpdateUs
 	update := bson.M{
 		"email":            user.GetEmail(),
 		"phone":            user.GetPhone(),
-		"dateofbirth":      user.GetDateofbirth(),
-		"firstname":        user.GetFirstname(),
-		"lastname":         user.GetLastname(),
-		"creditcardnumber": user.GetCreditcardnumber(),
-		"expirationdate":   user.GetExpirationdate(),
+		"dateofbirth":      user.GetDateOfBirth(),
+		"firstname":        user.GetFirstName(),
+		"lastname":         user.GetLastName(),
+		"creditcardnumber": user.GetCreditCardNumber(),
+		"expirationdate":   user.GetExpirationDate(),
 		"cvc":              user.GetCvc(),
 	}
 
@@ -177,11 +177,11 @@ func (s *UserServiceServer) UpdateUser(ctx context.Context, req *userpb.UpdateUs
 			Id:               decoded.ID.Hex(),
 			Email:            decoded.Email,
 			Phone:            decoded.Phone,
-			Dateofbirth:      decoded.DateOfBirth,
-			Firstname:        decoded.FirstName,
-			Lastname:         decoded.LastName,
-			Creditcardnumber: decoded.CreditCardNumber,
-			Expirationdate:   decoded.ExpirationDate,
+			DateOfBirth:      decoded.DateOfBirth,
+			FirstName:        decoded.FirstName,
+			LastName:         decoded.LastName,
+			CreditCardNumber: decoded.CreditCardNumber,
+			ExpirationDate:   decoded.ExpirationDate,
 			Cvc:              decoded.CVC,
 		},
 	}, nil
