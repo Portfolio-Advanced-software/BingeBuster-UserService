@@ -8,7 +8,7 @@ import (
 	amqp "github.com/rabbitmq/amqp091-go"
 )
 
-func ProduceMessage(message string, queue string) {
+func ProduceMessage(message string, queueName string) {
 	conn, err := amqp.Dial("amqps://tnhdeowx:tInXH7wKtKdyn-v97fZ_HGM5XmHsDTNl@rattlesnake.rmq.cloudamqp.com/tnhdeowx")
 	FailOnError(err, "Failed to connect to RabbitMQ")
 	defer conn.Close()
@@ -19,12 +19,12 @@ func ProduceMessage(message string, queue string) {
 
 	// Declare a queue
 	q, err := ch.QueueDeclare(
-		queue, // queue name
-		false, // durable
-		false, // delete when unused
-		false, // exclusive
-		false, // no-wait
-		nil,   // arguments
+		queueName, // queue name
+		false,     // durable
+		false,     // delete when unused
+		false,     // exclusive
+		false,     // no-wait
+		nil,       // arguments
 	)
 	FailOnError(err, "Failed to declare queue")
 	ctx, cancel := context.WithTimeout(context.Background(), 5*time.Second)
