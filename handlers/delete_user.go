@@ -34,8 +34,10 @@ func (s *UserServiceServer) DeleteUser(ctx context.Context, req *userpb.DeleteUs
 		"action": "deleteAllRecords",
 	}
 
+	conn, err := messaging.ConnectToRabbitMQ(globals.RabbitMQUrl)
+
 	queueName := "watch_history_queue"
-	messaging.ProduceMessage(message, queueName)
+	messaging.ProduceMessage(conn, message, queueName)
 
 	// Return response with success: true if no error is thrown (and thus document is removed)
 	return &userpb.DeleteUserRes{

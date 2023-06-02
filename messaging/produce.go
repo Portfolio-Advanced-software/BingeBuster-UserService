@@ -9,11 +9,7 @@ import (
 	amqp "github.com/rabbitmq/amqp091-go"
 )
 
-func ProduceMessage(payload interface{}, queueName string) {
-	conn, err := amqp.Dial("amqps://tnhdeowx:tInXH7wKtKdyn-v97fZ_HGM5XmHsDTNl@rattlesnake.rmq.cloudamqp.com/tnhdeowx")
-	FailOnError(err, "Failed to connect to RabbitMQ")
-	defer conn.Close()
-
+func ProduceMessage(conn *amqp.Connection, payload interface{}, queueName string) {
 	ch, err := conn.Channel()
 	FailOnError(err, "Failed to open a channel")
 	defer ch.Close()
@@ -49,6 +45,5 @@ func ProduceMessage(payload interface{}, queueName string) {
 		},
 	)
 	FailOnError(err, "Failed to publish a message")
-
 	log.Printf(" [x] Sent %s\n", jsonPayload)
 }
