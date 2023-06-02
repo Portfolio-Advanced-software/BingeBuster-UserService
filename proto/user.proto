@@ -1,0 +1,62 @@
+syntax = "proto3";
+
+package user;
+
+option go_package = "github.com/Portfolio-Advanced-software/BingeBuster-UserService/userpb";
+
+
+service UserService {
+    rpc CreateUser(CreateUserReq) returns (CreateUserRes);
+    rpc ReadUser(ReadUserReq) returns (ReadUserRes);
+    rpc UpdateUser(UpdateUserReq) returns (UpdateUserRes);
+    rpc DeleteUser(DeleteUserReq) returns (DeleteUserRes);
+    rpc ListUsers(ListUsersReq) returns (stream ListUsersRes);
+}
+
+
+message User {
+	string id = 1;
+	string email = 2;             
+	string phone = 3;                
+	string date_of_birth = 4;             
+	string first_name = 5;             
+	string last_name = 6;              
+	int32 credit_card_number = 7;           
+	string expiration_date = 8;       
+	int32 cvc = 9;                 
+}
+
+
+message CreateUserReq {
+    User user = 1; // User id blank
+}
+message CreateUserRes {
+    User user = 1; // User id filled in
+}
+
+message UpdateUserReq {
+    User user = 1;
+}
+message UpdateUserRes {
+    User user = 1;
+}
+
+message ReadUserReq {
+    string id = 1;
+}
+message ReadUserRes {
+    User user = 1;
+}
+
+message DeleteUserReq {
+    string id = 1;
+}
+message DeleteUserRes {
+    bool success = 1;
+}
+
+message ListUsersReq {}
+
+message ListUsersRes {
+    User user = 1;
+}
