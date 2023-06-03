@@ -54,10 +54,19 @@ func main() {
 	// Bind our collection to our global variable for use in other methods
 	globals.UserDb = globals.Db.Database(c.MongoDBDb).Collection(c.MongoDBCollection)
 
+	// Construct the RabbitMQ URL
 	globals.RabbitMQUrl = fmt.Sprintf("amqps://%s:%s@rattlesnake.rmq.cloudamqp.com/%s", c.RabbitMQUser, c.RabbitMQPwd, c.RabbitMQUser)
 
+	//Connect to RabbitMQ
+	fmt.Println("Connecting to RabbitMQ...")
 	conn, err := messaging.ConnectToRabbitMQ(globals.RabbitMQUrl)
-	messaging.ProduceMessage(conn, "hoi", "hoi")
+	if err != nil {
+		log.Fatalf("Can't connect to RabbitMQ: %s", err)
+	}
+	fmt.Println("Connected to RabbitMQ!")
+
+	// Start listening for messages RabbitMQ
+	go messaging.ConsumeMessage(conn, "user_queue", messaging.HandleMessage)
 
 	go func() {
 		if err := s.Serve(lis); err != nil {
