@@ -65,6 +65,7 @@ message ListUsersRes {
 message GetAllUserDataReq {
     string id = 1;
 }
+
 message GetAllUserDataRes {
     string data = 1;
 }
