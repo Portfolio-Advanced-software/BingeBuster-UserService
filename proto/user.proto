@@ -60,3 +60,10 @@ message ListUsersReq {}
 message ListUsersRes {
     User user = 1;
 }
+
+message GetAllUserDataReq {
+    string id = 1;
+}
+message GetAllUserDataReq {
+    string data = 1;
+}
