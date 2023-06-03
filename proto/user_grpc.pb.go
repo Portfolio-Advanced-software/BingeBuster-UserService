@@ -19,11 +19,12 @@ import (
 const _ = grpc.SupportPackageIsVersion7
 
 const (
-	UserService_CreateUser_FullMethodName = "/user.UserService/CreateUser"
-	UserService_ReadUser_FullMethodName   = "/user.UserService/ReadUser"
-	UserService_UpdateUser_FullMethodName = "/user.UserService/UpdateUser"
-	UserService_DeleteUser_FullMethodName = "/user.UserService/DeleteUser"
-	UserService_ListUsers_FullMethodName  = "/user.UserService/ListUsers"
+	UserService_CreateUser_FullMethodName     = "/user.UserService/CreateUser"
+	UserService_ReadUser_FullMethodName       = "/user.UserService/ReadUser"
+	UserService_UpdateUser_FullMethodName     = "/user.UserService/UpdateUser"
+	UserService_DeleteUser_FullMethodName     = "/user.UserService/DeleteUser"
+	UserService_ListUsers_FullMethodName      = "/user.UserService/ListUsers"
+	UserService_GetAllUserData_FullMethodName = "/user.UserService/GetAllUserData"
 )
 
 // UserServiceClient is the client API for UserService service.
@@ -35,6 +36,7 @@ type UserServiceClient interface {
 	UpdateUser(ctx context.Context, in *UpdateUserReq, opts ...grpc.CallOption) (*UpdateUserRes, error)
 	DeleteUser(ctx context.Context, in *DeleteUserReq, opts ...grpc.CallOption) (*DeleteUserRes, error)
 	ListUsers(ctx context.Context, in *ListUsersReq, opts ...grpc.CallOption) (UserService_ListUsersClient, error)
+	GetAllUserData(ctx context.Context, in *GetAllUserDataReq, opts ...grpc.CallOption) (*GetAllUserDataRes, error)
 }
 
 type userServiceClient struct {
@@ -113,6 +115,15 @@ func (x *userServiceListUsersClient) Recv() (*ListUsersRes, error) {
 	return m, nil
 }
 
+func (c *userServiceClient) GetAllUserData(ctx context.Context, in *GetAllUserDataReq, opts ...grpc.CallOption) (*GetAllUserDataRes, error) {
+	out := new(GetAllUserDataRes)
+	err := c.cc.Invoke(ctx, UserService_GetAllUserData_FullMethodName, in, out, opts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
 // UserServiceServer is the server API for UserService service.
 // All implementations must embed UnimplementedUserServiceServer
 // for forward compatibility
@@ -122,6 +133,7 @@ type UserServiceServer interface {
 	UpdateUser(context.Context, *UpdateUserReq) (*UpdateUserRes, error)
 	DeleteUser(context.Context, *DeleteUserReq) (*DeleteUserRes, error)
 	ListUsers(*ListUsersReq, UserService_ListUsersServer) error
+	GetAllUserData(context.Context, *GetAllUserDataReq) (*GetAllUserDataRes, error)
 	mustEmbedUnimplementedUserServiceServer()
 }
 
@@ -143,6 +155,9 @@ func (UnimplementedUserServiceServer) DeleteUser(context.Context, *DeleteUserReq
 }
 func (UnimplementedUserServiceServer) ListUsers(*ListUsersReq, UserService_ListUsersServer) error {
 	return status.Errorf(codes.Unimplemented, "method ListUsers not implemented")
+}
+func (UnimplementedUserServiceServer) GetAllUserData(context.Context, *GetAllUserDataReq) (*GetAllUserDataRes, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method GetAllUserData not implemented")
 }
 func (UnimplementedUserServiceServer) mustEmbedUnimplementedUserServiceServer() {}
 
@@ -250,6 +265,24 @@ func (x *userServiceListUsersServer) Send(m *ListUsersRes) error {
 	return x.ServerStream.SendMsg(m)
 }
 
+func _UserService_GetAllUserData_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(GetAllUserDataReq)
+	if err := dec(in); err != nil {
+		return nil, err
+	}
+	if interceptor == nil {
+		return srv.(UserServiceServer).GetAllUserData(ctx, in)
+	}
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: UserService_GetAllUserData_FullMethodName,
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(UserServiceServer).GetAllUserData(ctx, req.(*GetAllUserDataReq))
+	}
+	return interceptor(ctx, in, info, handler)
+}
+
 // UserService_ServiceDesc is the grpc.ServiceDesc for UserService service.
 // It's only intended for direct use with grpc.RegisterService,
 // and not to be introspected or modified (even as a copy)
@@ -272,6 +305,10 @@ var UserService_ServiceDesc = grpc.ServiceDesc{
 		{
 			MethodName: "DeleteUser",
 			Handler:    _UserService_DeleteUser_Handler,
+		},
+		{
+			MethodName: "GetAllUserData",
+			Handler:    _UserService_GetAllUserData_Handler,
 		},
 	},
 	Streams: []grpc.StreamDesc{

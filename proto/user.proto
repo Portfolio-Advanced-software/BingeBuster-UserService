@@ -11,6 +11,7 @@ service UserService {
     rpc UpdateUser(UpdateUserReq) returns (UpdateUserRes);
     rpc DeleteUser(DeleteUserReq) returns (DeleteUserRes);
     rpc ListUsers(ListUsersReq) returns (stream ListUsersRes);
+    rpc GetAllUserData(GetAllUserDataReq) returns (GetAllUserDataRes);
 }
 
 
@@ -64,6 +65,6 @@ message ListUsersRes {
 message GetAllUserDataReq {
     string id = 1;
 }
-message GetAllUserDataReq {
+message GetAllUserDataRes {
     string data = 1;
 }
