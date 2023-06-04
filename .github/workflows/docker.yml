@@ -69,4 +69,4 @@ jobs:
 
       - name: Update image in Kubernetes Cluster
         run: |
-          kubectl set image deployment/user-service user-service=milofow/bingebuster-userservice:latest
+          kubectl rollout restart deployment/user-service
